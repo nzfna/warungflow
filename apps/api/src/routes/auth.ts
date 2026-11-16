@@ -4,10 +4,15 @@ import { loginSchema, registerSchema } from "@warungflow/shared";
 import { HttpError, clearSession, requireAuth, setSession, verifyRefresh } from "../auth";
 import { q } from "../db";
 import { parse } from "../lib";
+import { rateLimit } from "../ratelimit";
 
 const r = Router();
 
-r.post("/register", async (req, res) => {
+// Hash tiruan agar waktu respons login untuk email yang tidak ada tetap mirip,
+// sehingga penyerang tidak bisa menebak email mana yang terdaftar.
+const DUMMY_HASH = "$2a$10$eZfwWMsymbgtQgqXWV93Ye0wHCWGxNVd.waiFXkSE0hocf9uiFPE6";
+
+r.post("/register", rateLimit("register", 5, 60 * 60 * 1000), async (req, res) => {
   const b = parse(registerSchema, req.body);
   const exists = await q("SELECT 1 FROM users WHERE email=$1", [b.email]);
   if (exists[0]) throw new HttpError(409, "Email sudah terdaftar. Silakan masuk.");
@@ -17,10 +22,11 @@ r.post("/register", async (req, res) => {
   res.status(201).json({ user: u });
 });
 
-r.post("/login", async (req, res) => {
+r.post("/login", rateLimit("login", 10, 10 * 60 * 1000), async (req, res) => {
   const b = parse(loginSchema, req.body);
   const [u] = await q("SELECT id,name,email,password_hash FROM users WHERE email=$1", [b.email]);
-  if (!u || !(await bcrypt.compare(b.password, u.password_hash))) throw new HttpError(401, "Email atau password salah.");
+  const ok = await bcrypt.compare(b.password, u?.password_hash ?? DUMMY_HASH);
+  if (!u || !ok) throw new HttpError(401, "Email atau password salah.");
   setSession(res, u.id);
   res.json({ user: { id: u.id, name: u.name, email: u.email } });
 });

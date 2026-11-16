@@ -1,10 +1,11 @@
 import { PoolClient } from "pg";
-import { z, ZodSchema } from "zod";
+import { z } from "zod";
 import { HttpError } from "./auth";
 import { qc } from "./db";
 import type { WalletKind } from "@warungflow/shared";
 
-export function parse<T>(schema: ZodSchema<T>, body: unknown): T {
+// z.output<S> memakai tipe hasil parse (setelah .default()), bukan tipe input.
+export function parse<S extends z.ZodTypeAny>(schema: S, body: unknown): z.output<S> {
   const r = schema.safeParse(body);
   if (!r.success) {
     const i = r.error.issues[0];

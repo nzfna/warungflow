@@ -8,12 +8,17 @@ types.setTypeParser(1082, (v) => v);
 
 declare global { var __pgPool: Pool | undefined }
 
+// Serverless: tiap instance fungsi punya pool sendiri, jadi jumlah koneksi
+// dijaga kecil agar tidak menghabiskan kuota koneksi Neon. Selalu pakai URL
+// pooled (-pooler).
 export const pool: Pool =
   globalThis.__pgPool ??
   new Pool({
-    connectionString: process.env.DATABASE_URL,   // gunakan URL pooled (-pooler) dari Neon
+    connectionString: process.env.DATABASE_URL,
     ssl: { rejectUnauthorized: false },
-    max: 5,
+    max: Number(process.env.PG_POOL_MAX ?? 3),
+    idleTimeoutMillis: 10_000,
+    connectionTimeoutMillis: 10_000,
   });
 if (process.env.NODE_ENV !== "production") globalThis.__pgPool = pool;
 

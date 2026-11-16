@@ -1,11 +1,10 @@
 import { Router } from "express";
 import { checkoutSchema } from "@warungflow/shared";
-import { HttpError, audit, requireAuth, requireBusiness, requireRole } from "../auth";
+import { HttpError, audit, requireRole } from "../auth";
 import { q, qc, tx } from "../db";
 import { cashMove, lockBusiness, nextNumber, parse, walletBalance, walletMove, localDate } from "../lib";
 
 const r = Router();
-r.use(requireAuth, requireBusiness);
 
 // Checkout kasir & belanja internal owner. Semua perubahan dalam satu transaksi DB.
 r.post("/checkout", async (req, res) => {

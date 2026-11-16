@@ -2,5 +2,9 @@
   "installCommand": "cd ../.. && pnpm install --frozen-lockfile=false",
   "buildCommand": "cd ../.. && pnpm --filter @warungflow/shared build",
   "rewrites": [{ "source": "/(.*)", "destination": "/api/index" }],
+  "functions": {
+    "api/index.ts": { "maxDuration": 30 }
+  },
+  "regions": ["sin1"],
   "crons": [{ "path": "/api/cron/daily", "schedule": "0 13 * * *" }]
 }

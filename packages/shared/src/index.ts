@@ -81,7 +81,7 @@ export const purchaseSchema = z.object({
   supplierId: z.string().uuid("Pilih supplier"),
   items: z.array(z.object({
     productId: z.string().uuid(), quantity: z.number().positive(), unitCost: money,
-  })).min(1, "Tambahkan minimal 1 produk"),
+  })).min(1, "Tambahkan minimal 1 produk").max(200, "Maksimal 200 baris per pembelian"),
   discount: money.default(0),
   extraCost: money.default(0),
   paidAmount: money.default(0),
@@ -93,7 +93,7 @@ export const supplierPaymentSchema = z.object({
   amount: posMoney, method: z.enum(["cash", "transfer"]).default("cash"), note: z.string().trim().max(200).optional().nullable(),
 });
 export const checkoutSchema = z.object({
-  items: z.array(z.object({ productId: z.string().uuid(), quantity: z.number().positive() })).min(1, "Keranjang masih kosong"),
+  items: z.array(z.object({ productId: z.string().uuid(), quantity: z.number().positive() })).min(1, "Keranjang masih kosong").max(200, "Maksimal 200 item per transaksi"),
   discount: money.default(0),
   paymentMethod: z.enum(PAYMENT_METHODS).default("cash"),
   received: money.optional(),

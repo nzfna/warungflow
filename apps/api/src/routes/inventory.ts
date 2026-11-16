@@ -1,12 +1,11 @@
 import { Router } from "express";
 import { z } from "zod";
 import { categorySchema, productSchema, purchaseSchema, stockAdjustSchema, supplierPaymentSchema, supplierSchema } from "@warungflow/shared";
-import { HttpError, audit, requireAuth, requireBusiness, requireRole } from "../auth";
+import { HttpError, audit, requireRole } from "../auth";
 import { q, qc, tx } from "../db";
 import { cashMove, lockBusiness, nextNumber, parse, walletBalance, walletMove } from "../lib";
 
 const r = Router();
-r.use(requireAuth, requireBusiness);
 
 /* ---------- Kategori ---------- */
 r.get("/categories", async (req, res) => {

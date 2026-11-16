@@ -7,9 +7,18 @@ export class HttpError extends Error {
   constructor(public status: number, message: string) { super(message); }
 }
 
-const ACCESS = process.env.JWT_SECRET || "dev-secret";
-const REFRESH = process.env.JWT_REFRESH_SECRET || "dev-refresh-secret";
 const prod = process.env.NODE_ENV === "production";
+const ACCESS = process.env.JWT_SECRET || (prod ? "" : "dev-secret");
+const REFRESH = process.env.JWT_REFRESH_SECRET || (prod ? "" : "dev-refresh-secret");
+
+// Gagal cepat lebih aman daripada diam-diam memakai secret default:
+// dengan secret yang diketahui publik, siapa pun bisa membuat token login sendiri.
+if (prod) {
+  const weak = (v: string) => !v || v.length < 32 || v.startsWith("ganti-");
+  if (weak(ACCESS) || weak(REFRESH))
+    throw new Error("JWT_SECRET dan JWT_REFRESH_SECRET wajib diisi (min. 32 karakter acak) di production.");
+  if (ACCESS === REFRESH) throw new Error("JWT_SECRET dan JWT_REFRESH_SECRET tidak boleh sama.");
+}
 
 export type Ctx = { userId: string; businessId: string; role: Role };
 declare global { namespace Express { interface Request { userId?: string; ctx?: Ctx } } }

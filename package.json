@@ -5,7 +5,10 @@
     "dev:api": "pnpm --filter @warungflow/api dev",
     "dev:web": "pnpm --filter @warungflow/web dev",
     "migrate": "pnpm --filter @warungflow/api migrate",
-    "build:shared": "pnpm --filter @warungflow/shared build"
+    "build:shared": "pnpm --filter @warungflow/shared build",
+    "typecheck": "pnpm build:shared && pnpm --filter @warungflow/api typecheck",
+    "build:web": "pnpm build:shared && pnpm --filter @warungflow/web build"
   },
+  "engines": { "node": "22.x" },
   "packageManager": "pnpm@9.12.0"
 }

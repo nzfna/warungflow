@@ -1,11 +1,10 @@
 import { Router } from "express";
 import { closingSchema } from "@warungflow/shared";
-import { HttpError, audit, requireAuth, requireBusiness, requireRole } from "../auth";
+import { HttpError, audit, requireRole } from "../auth";
 import { q, qc, tx } from "../db";
 import { fundsSummary, localDate, lockBusiness, parse } from "../lib";
 
 const r = Router();
-r.use(requireAuth, requireBusiness);
 
 const today = () => new Date(Date.now() + 7 * 3600 * 1000).toISOString().slice(0, 10); // Asia/Jakarta (UTC+7)
 

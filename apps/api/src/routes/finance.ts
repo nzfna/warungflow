@@ -1,11 +1,10 @@
 import { Router } from "express";
 import { WALLET_KINDS, WalletKind, allocationSchema, expenseSchema, goalFundSchema, goalSchema, goalUseSchema, payoutSchema, transferSchema } from "@warungflow/shared";
-import { HttpError, audit, requireAuth, requireBusiness, requireRole } from "../auth";
+import { HttpError, audit, requireRole } from "../auth";
 import { q, qc, tx } from "../db";
 import { cashMove, fundsSummary, localDate, lockBusiness, parse, walletBalance, walletMove } from "../lib";
 
 const r = Router();
-r.use(requireAuth, requireBusiness);
 const idr = (n: number) => "Rp" + Math.round(n).toLocaleString("id-ID");
 
 /* ---------- Dompet ---------- */
