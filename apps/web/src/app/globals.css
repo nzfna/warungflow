@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --sidebar-width: 240px;
+  --header-height: 68px;
+}
+html { -webkit-text-size-adjust: 100%; }
+body { background: #F7F8FA; color: #172033; font-size: 14px; line-height: 1.5; }
+:focus-visible { outline: 2px solid #2563EB; outline-offset: 2px; }
+input, select, textarea { font: inherit; }
+.num { font-variant-numeric: tabular-nums; }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }

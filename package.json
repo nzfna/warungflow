@@ -1,0 +1,11 @@
+{
+  "name": "warungflow",
+  "private": true,
+  "scripts": {
+    "dev:api": "pnpm --filter @warungflow/api dev",
+    "dev:web": "pnpm --filter @warungflow/web dev",
+    "migrate": "pnpm --filter @warungflow/api migrate",
+    "build:shared": "pnpm --filter @warungflow/shared build"
+  },
+  "packageManager": "pnpm@9.12.0"
+}
